@@ -2,6 +2,7 @@
   "name": "youtube-transcript-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/youtube-transcript",
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.8",
     "@testing-library/jest-dom": "^5.14.1",
