@@ -1,46 +1,100 @@
-# Getting Started with Create React App
+# YouTube Transcript Fetcher
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+YouTube Transcript Fetcher is a React-based web application that allows users to fetch and copy YouTube video transcripts. It provides two modes: a simple transcript and a detailed transcript with more video metadata.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Fetch the transcript for a YouTube video by entering its URL.
+- Choose between a simple transcript (just text) or a detailed transcript (includes timing and video information).
+- View the fetched transcript in a textarea.
+- Copy the transcript to the clipboard using the copy button (button is disabled when there's no transcript).
 
-### `yarn start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Frontend**: ReactJS (with TypeScript)
+- **State Management**: Redux, Redux-Saga
+- **Backend**: Express with `ytdl-core` and `youtube-captions-scraper`
+- **Clipboard API**: For copying the transcript content.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Getting Started
 
-### `yarn test`
+### Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js (v18.x or later)
+- Yarn (or npm)
+- A running instance of the backend service to fetch YouTube transcripts. [See backend setup instructions below].
 
-### `yarn build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/andresz74/youtube-transcript-app.git
+   cd youtube-transcript-fetcher
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. **Install dependencies**:
+   ```bash
+   yarn install
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. **Configure the API URL**:
+   Create a `config.ts` file in the `src` folder with the following content:
+   ```ts
+   const config = {
+     apiBaseUrl: 'http://your-backend-ip:3004', // Update with your backend server URL
+   };
 
-### `yarn eject`
+   export default config;
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+4. **Start the React app**:
+   ```bash
+   yarn start
+   ```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   The app will be running on `http://localhost:3000`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Backend Setup
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+The backend service is responsible for fetching the transcript from YouTube using `ytdl-core` and `youtube-captions-scraper`.
 
-## Learn More
+To set up the backend:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. **Clone the backend repository**
+    ```
+    git clone https://github.com/andresz74/youtube-transcript-generator
+    cd youtube-transcript-generator
+    ```
+2. **Install required packages**:
+   ```bash
+   yarn
+   ```
+3. **Run the backend server** on port `3004`.
+    ```
+    yarn start
+    ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Usage
+
+1. Enter the **YouTube URL** of a video.
+2. Toggle the **"Detailed Transcript"** checkbox if you want a detailed transcript (default is a simple transcript).
+3. Click the **"Fetch Transcript"** button to retrieve the transcript.
+4. The transcript will be displayed in the text area.
+5. Click the **"Copy"** button to copy the transcript to your clipboard (the button is disabled if no transcript is available).
+
+### Available Scripts
+
+- **`yarn start`**: Runs the app in development mode.
+- **`yarn build`**: Builds the app for production.
+- **`yarn test`**: Runs the test suite (if tests are added).
+- **`yarn lint`**: Lints the code for style and errors.
+
+### Future Enhancements
+
+- Add pagination for large transcripts.
+- Implement different language support for fetching captions.
+- Improve UI/UX with more detailed video information and error handling.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
