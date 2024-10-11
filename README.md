@@ -29,7 +29,7 @@ YouTube Transcript Fetcher is a React-based web application that allows users to
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/andresz74/youtube-transcript-app.git
-   cd youtube-transcript-fetcher
+   cd youtube-transcript-app
    ```
 
 2. **Install dependencies**:
