@@ -1,50 +1,50 @@
-import { Copy } from "lucide-react"
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { Copy } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { useAppDispatch, useAppSelector } from './hooks'; // Import typed hooks
-import { fetchTranscript } from './actions';
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAppDispatch, useAppSelector } from "./hooks";
+import { fetchTranscript } from "./actions";
 
 const App: React.FC = () => {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState("");
   const [isDetailed, setIsDetailed] = useState(false);
-  const dispatch = useAppDispatch(); // Typed dispatch hook
-  const transcriptData = useAppSelector((state) => state.transcript.transcriptData); // Typed selector hook
-  const error = useAppSelector((state) => state.transcript.error); // Typed selector hook
-  const [isCopied, setIsCopied] = useState(false); // State to manage the copy status
-  const [loading, setLoading] = useState(false); // Track loading state
+  const dispatch = useAppDispatch();
+  const transcriptData = useAppSelector(
+    (state) => state.transcript.transcriptData
+  );
+  const error = useAppSelector((state) => state.transcript.error);
+  const [isCopied, setIsCopied] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Reset loading state when transcript data or error is received
   useEffect(() => {
     if (transcriptData || error) {
+      console.log("Transcript Data:", transcriptData); // Verify the response
       setLoading(false);
     }
   }, [transcriptData, error]);
 
   const handleSubmit = () => {
-    setLoading(true); // Set loading to true when request starts
+    setLoading(true);
     dispatch(fetchTranscript(url, isDetailed));
   };
 
   const handleCopy = async () => {
     if (transcriptData) {
       try {
-        await navigator.clipboard.writeText(JSON.stringify(transcriptData, null, 2)); // Copy to clipboard
-        setIsCopied(true); // Set copied status to true
-        setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+        await navigator.clipboard.writeText(transcriptData.transcript);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
       } catch (error) {
-        console.error('Failed to copy:', error);
+        console.error("Failed to copy:", error);
       }
     }
   };
@@ -54,45 +54,68 @@ const App: React.FC = () => {
       <Card className="w-[480px]">
         <CardHeader>
           <CardTitle>YouTube Transcript Fetcher</CardTitle>
-          <CardDescription>YouTube Transcript Fetcher is an application that allows users to fetch and copy YouTube video transcripts. It provides two modes: a simple transcript and a detailed transcript with more video metadata.</CardDescription>
+          <p>
+            Fetch and copy YouTube video transcripts. Choose between a simple or
+            detailed transcript.
+          </p>
         </CardHeader>
         <CardContent>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor='yturl'>YouTube URL</Label>
-              <Input type="text" id="yturl" placeholder="Enter YouTube URL" value={url} onChange={(e) => setUrl(e.target.value)} />
+              <Label htmlFor="yturl">YouTube URL</Label>
+              <Input
+                type="text"
+                id="yturl"
+                placeholder="Enter YouTube URL"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
             </div>
 
             <div className="flex items-center space-x-2">
-              <Checkbox id="isDetailed" checked={isDetailed} onChange={() => setIsDetailed(!isDetailed)} />
+              <Checkbox
+                id="isDetailed"
+                checked={isDetailed}
+                onChange={() => setIsDetailed(!isDetailed)}
+              />
               <Label htmlFor="isDetailed">Detailed Transcript</Label>
             </div>
 
-            <div className="flex flex-col space-y-1.5">
-              <Button variant="default" size="default" onClick={handleSubmit} disabled={loading || !url.trim()}>
-                {loading ? 'Fetching...' : 'Fetch Transcript'}
-              </Button>
-            </div>
+            <Button
+              variant="default"
+              size="default"
+              onClick={handleSubmit}
+              disabled={loading || !url.trim()}
+            >
+              {loading ? "Fetching..." : "Fetch Transcript"}
+            </Button>
 
-            <div className="flex flex-col space-y-1.5">
-              {error ? (
-                <p style={{ color: 'red' }}>{error}</p>
-              ) : (
-                <>
-                  <Label htmlFor="yttranscript">Transcript Result</Label>
-                  <Textarea className="min-h-[200px] font-small" id='yttranscript' value={transcriptData ? JSON.stringify(transcriptData, null, 2) : ''} readOnly />
-                </>
-              )}
-              <Button variant="outline" size="icon" onClick={handleCopy} disabled={!transcriptData}>
-                <Copy className="h-4 w-4" />
-              </Button>
-              {isCopied ? 'Copied!' : null}
-            </div>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            {transcriptData && (
+              <div className="mt-4">
+                <Card className="">
+                <div className="p-2 pb-4 text-md">Transcript</div>
+                  <CardContent className="max-h-[400px] text-xs font-small overflow-auto">
+                    <div className="">{transcriptData.transcript}</div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleCopy}
+                      disabled={!transcriptData}
+                      className="mt-4"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    {isCopied && <p>Copied!</p>}
+                  </CardFooter>
+                </Card>
+              </div>
+            )}
           </div>
         </CardContent>
-        {/* <CardFooter>
-        <p>Card Footer</p>
-      </CardFooter> */}
       </Card>
     </div>
   );
