@@ -1,0 +1,8 @@
+{
+    "components": {
+      "button": {
+        "path": "./src/components/ui/button.tsx"
+      }
+    }
+  }
+  

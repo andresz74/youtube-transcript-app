@@ -1,4 +1,18 @@
+import { Copy } from "lucide-react"
 import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { useAppDispatch, useAppSelector } from './hooks'; // Import typed hooks
 import { fetchTranscript } from './actions';
 
@@ -28,47 +42,50 @@ const App: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>YouTube Transcript Fetcher</h1>
+    <div className="chart-wrapper mx-auto flex max-w-6xl flex-col flex-wrap items-start justify-center gap-6 p-6 sm:flex-row sm:p-8">
+      <Card className="w-[480px]">
+        <CardHeader>
+          <CardTitle>YouTube Transcript Fetcher</CardTitle>
+          <CardDescription>YouTube Transcript Fetcher is an application that allows users to fetch and copy YouTube video transcripts. It provides two modes: a simple transcript and a detailed transcript with more video metadata.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid w-full items-center gap-4">
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor='yturl'>YouTube URL</Label>
+              <Input type="text" id="yturl" placeholder="Enter YouTube URL" value={url} onChange={(e) => setUrl(e.target.value)} />
+            </div>
 
-      <input
-        type="text"
-        placeholder="Enter YouTube URL"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-      />
+            <div className="flex items-center space-x-2">
+              <Checkbox id="isDetailed" checked={isDetailed} onChange={() => setIsDetailed(!isDetailed)} />
+              <Label htmlFor="isDetailed">Detailed Transcript</Label>
+            </div>
 
-      <label>
-        <input
-          type="checkbox"
-          checked={isDetailed}
-          onChange={() => setIsDetailed(!isDetailed)}
-        />
-        Detailed Transcript
-      </label>
+            <div className="flex flex-col space-y-1.5">
+              <Button variant="default" size="default" onClick={handleSubmit}>
+                Fetch Transcript
+              </Button>
+            </div>
 
-      <button onClick={handleSubmit}>Fetch Transcript</button>
-
-      <div>
-        <h3>Transcript Result</h3>
-        {error ? (
-          <p style={{ color: 'red' }}>{error}</p>
-        ) : (
-          <textarea
-            value={transcriptData ? JSON.stringify(transcriptData, null, 2) : ''}
-            readOnly
-            rows={10}
-            cols={80}
-          />
-        )}
-      </div>
-      <button
-        onClick={handleCopy}
-        disabled={!transcriptData} // Disable button if textarea is empty
-        style={{ marginTop: '10px' }}
-      >
-        {isCopied ? 'Copied!' : 'Copy'}
-      </button>
+            <div className="flex flex-col space-y-1.5">
+              {error ? (
+                <p style={{ color: 'red' }}>{error}</p>
+              ) : (
+                <>
+                  <Label htmlFor="yttranscript">Transcript Result</Label>
+                  <Textarea className="min-h-[200px] font-small" id='yttranscript' value={transcriptData ? JSON.stringify(transcriptData, null, 2) : ''} readOnly />
+                </>
+              )}
+              <Button variant="outline" size="icon" onClick={handleCopy} disabled={!transcriptData}>
+                <Copy className="h-4 w-4" />
+              </Button>
+              {isCopied ? 'Copied!' : null}
+            </div>
+          </div>
+        </CardContent>
+        {/* <CardFooter>
+        <p>Card Footer</p>
+      </CardFooter> */}
+      </Card>
     </div>
   );
 };

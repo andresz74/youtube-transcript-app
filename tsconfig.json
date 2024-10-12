@@ -1,5 +1,11 @@
 {
   "compilerOptions": {
+    "baseUrl": "src", // Make src the base URL
+    "paths": {
+      "@/*": [
+        "./*"
+      ] // Configure @/ alias to point to src/
+    },
     "target": "es5",
     "lib": [
       "dom",
