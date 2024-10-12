@@ -1,5 +1,5 @@
 import { Copy } from "lucide-react"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -23,12 +23,20 @@ const App: React.FC = () => {
   const transcriptData = useAppSelector((state) => state.transcript.transcriptData); // Typed selector hook
   const error = useAppSelector((state) => state.transcript.error); // Typed selector hook
   const [isCopied, setIsCopied] = useState(false); // State to manage the copy status
+  const [loading, setLoading] = useState(false); // Track loading state
+
+  // Reset loading state when transcript data or error is received
+  useEffect(() => {
+    if (transcriptData || error) {
+      setLoading(false);
+    }
+  }, [transcriptData, error]);
 
   const handleSubmit = () => {
+    setLoading(true); // Set loading to true when request starts
     dispatch(fetchTranscript(url, isDetailed));
   };
 
-  // Function to copy the transcript content to the clipboard
   const handleCopy = async () => {
     if (transcriptData) {
       try {
@@ -61,8 +69,8 @@ const App: React.FC = () => {
             </div>
 
             <div className="flex flex-col space-y-1.5">
-              <Button variant="default" size="default" onClick={handleSubmit}>
-                Fetch Transcript
+              <Button variant="default" size="default" onClick={handleSubmit} disabled={loading || !url.trim()}>
+                {loading ? 'Fetching...' : 'Fetch Transcript'}
               </Button>
             </div>
 
