@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './hooks'; // Import typed hooks
 import { fetchTranscript } from './actions';
 
@@ -9,12 +9,20 @@ const App: React.FC = () => {
   const transcriptData = useAppSelector((state) => state.transcript.transcriptData); // Typed selector hook
   const error = useAppSelector((state) => state.transcript.error); // Typed selector hook
   const [isCopied, setIsCopied] = useState(false); // State to manage the copy status
+  const [loading, setLoading] = useState(false); // Track loading state
+
+  // Reset loading state when transcript data or error is received
+  useEffect(() => {
+    if (transcriptData || error) {
+      setLoading(false);
+    }
+  }, [transcriptData, error]);
 
   const handleSubmit = () => {
+    setLoading(true); // Set loading to true when request starts
     dispatch(fetchTranscript(url, isDetailed));
   };
 
-  // Function to copy the transcript content to the clipboard
   const handleCopy = async () => {
     if (transcriptData) {
       try {
@@ -47,7 +55,9 @@ const App: React.FC = () => {
         Detailed Transcript
       </label>
 
-      <button onClick={handleSubmit}>Fetch Transcript</button>
+      <button onClick={handleSubmit} disabled={loading || !url.trim()}>
+        {loading ? 'Fetching...' : 'Fetch Transcript'}
+      </button>
 
       <div>
         <h3>Transcript Result</h3>
@@ -62,9 +72,10 @@ const App: React.FC = () => {
           />
         )}
       </div>
+
       <button
         onClick={handleCopy}
-        disabled={!transcriptData} // Disable button if textarea is empty
+        disabled={!transcriptData} // Disable button if no transcript data
         style={{ marginTop: '10px' }}
       >
         {isCopied ? 'Copied!' : 'Copy'}
