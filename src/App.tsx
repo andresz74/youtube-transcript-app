@@ -1,85 +1,122 @@
-import React, { useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from './hooks'; // Import typed hooks
-import { fetchTranscript } from './actions';
+import { Copy } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAppDispatch, useAppSelector } from "./hooks";
+import { fetchTranscript } from "./actions";
 
 const App: React.FC = () => {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState("");
   const [isDetailed, setIsDetailed] = useState(false);
-  const dispatch = useAppDispatch(); // Typed dispatch hook
-  const transcriptData = useAppSelector((state) => state.transcript.transcriptData); // Typed selector hook
-  const error = useAppSelector((state) => state.transcript.error); // Typed selector hook
-  const [isCopied, setIsCopied] = useState(false); // State to manage the copy status
-  const [loading, setLoading] = useState(false); // Track loading state
+  const dispatch = useAppDispatch();
+  const transcriptData = useAppSelector(
+    (state) => state.transcript.transcriptData
+  );
+  const error = useAppSelector((state) => state.transcript.error);
+  const [isCopied, setIsCopied] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Reset loading state when transcript data or error is received
   useEffect(() => {
     if (transcriptData || error) {
+      console.log("Transcript Data:", transcriptData); // Verify the response
       setLoading(false);
     }
   }, [transcriptData, error]);
 
   const handleSubmit = () => {
-    setLoading(true); // Set loading to true when request starts
+    setLoading(true);
     dispatch(fetchTranscript(url, isDetailed));
   };
 
   const handleCopy = async () => {
     if (transcriptData) {
       try {
-        await navigator.clipboard.writeText(JSON.stringify(transcriptData, null, 2)); // Copy to clipboard
-        setIsCopied(true); // Set copied status to true
-        setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+        await navigator.clipboard.writeText(transcriptData.transcript);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
       } catch (error) {
-        console.error('Failed to copy:', error);
+        console.error("Failed to copy:", error);
       }
     }
   };
 
   return (
-    <div>
-      <h1>YouTube Transcript Fetcher</h1>
+    <div className="chart-wrapper mx-auto flex max-w-6xl flex-col flex-wrap items-start justify-center gap-6 p-6 sm:flex-row sm:p-8">
+      <Card className="w-[480px]">
+        <CardHeader>
+          <CardTitle>YouTube Transcript Fetcher</CardTitle>
+          <p>
+            Fetch and copy YouTube video transcripts. Choose between a simple or
+            detailed transcript.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid w-full items-center gap-4">
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="yturl">YouTube URL</Label>
+              <Input
+                type="text"
+                id="yturl"
+                placeholder="Enter YouTube URL"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+              />
+            </div>
 
-      <input
-        type="text"
-        placeholder="Enter YouTube URL"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-      />
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="isDetailed"
+                checked={isDetailed}
+                onChange={() => setIsDetailed(!isDetailed)}
+              />
+              <Label htmlFor="isDetailed">Detailed Transcript</Label>
+            </div>
 
-      <label>
-        <input
-          type="checkbox"
-          checked={isDetailed}
-          onChange={() => setIsDetailed(!isDetailed)}
-        />
-        Detailed Transcript
-      </label>
+            <Button
+              variant="default"
+              size="default"
+              onClick={handleSubmit}
+              disabled={loading || !url.trim()}
+            >
+              {loading ? "Fetching..." : "Fetch Transcript"}
+            </Button>
 
-      <button onClick={handleSubmit} disabled={loading || !url.trim()}>
-        {loading ? 'Fetching...' : 'Fetch Transcript'}
-      </button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <div>
-        <h3>Transcript Result</h3>
-        {error ? (
-          <p style={{ color: 'red' }}>{error}</p>
-        ) : (
-          <textarea
-            value={transcriptData ? JSON.stringify(transcriptData, null, 2) : ''}
-            readOnly
-            rows={10}
-            cols={80}
-          />
-        )}
-      </div>
-
-      <button
-        onClick={handleCopy}
-        disabled={!transcriptData} // Disable button if no transcript data
-        style={{ marginTop: '10px' }}
-      >
-        {isCopied ? 'Copied!' : 'Copy'}
-      </button>
+            {transcriptData && (
+              <div className="mt-4">
+                <Card className="">
+                <div className="p-2 pb-4 text-md">Transcript</div>
+                  <CardContent className="max-h-[400px] text-xs font-small overflow-auto">
+                    <div className="">{transcriptData.transcript}</div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleCopy}
+                      disabled={!transcriptData}
+                      className="mt-4"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    {isCopied && <p>Copied!</p>}
+                  </CardFooter>
+                </Card>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
