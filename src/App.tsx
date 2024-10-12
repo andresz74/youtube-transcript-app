@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -54,49 +55,51 @@ const App: React.FC = () => {
       <Card className="w-[480px]">
         <CardHeader>
           <CardTitle>YouTube Transcript Fetcher</CardTitle>
-          <p>
-            Fetch and copy YouTube video transcripts. Choose between a simple or
+          <CardDescription>Fetch and copy YouTube video transcripts. Choose between a simple or
             detailed transcript.
-          </p>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="yturl">YouTube URL</Label>
-              <Input
-                type="text"
-                id="yturl"
-                placeholder="Enter YouTube URL"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-              />
+            <div className="flex flex-row space-x-1.5">
+              <div className="flex-1">
+                <Input
+                  type="text"
+                  id="yturl"
+                  placeholder="Enter YouTube URL"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                />
+              </div>
+              <div className="flex">
+                <Button
+                  className="w-32"
+                  variant="default"
+                  onClick={handleSubmit}
+                  disabled={loading || !url.trim()}
+                >
+                  {loading ? "Fetching..." : "Fetch Transcript"}
+                </Button>
+              </div>
             </div>
-
-            <div className="flex items-center space-x-2">
+            {error && <div className="flex" style={{ color: "red" }}>{error}</div>}
+            {/* <div className="flex items-center space-x-2">
               <Checkbox
                 id="isDetailed"
                 checked={isDetailed}
                 onChange={() => setIsDetailed(!isDetailed)}
               />
               <Label htmlFor="isDetailed">Detailed Transcript</Label>
+            </div> */}
+            <div className="flex flex-col space-y-1.5 items-center">
             </div>
-
-            <Button
-              variant="default"
-              size="default"
-              onClick={handleSubmit}
-              disabled={loading || !url.trim()}
-            >
-              {loading ? "Fetching..." : "Fetch Transcript"}
-            </Button>
-
             {error && <p style={{ color: "red" }}>{error}</p>}
 
             {transcriptData && (
               <div className="mt-4">
                 <Card className="">
-                <div className="p-2 pb-4 text-md">Transcript</div>
-                  <CardContent className="max-h-[400px] text-xs font-small overflow-auto">
+                  <div className="p-2 text-sm font-bold">{transcriptData.title}</div>
+                  <CardContent className="max-h-[320px] text-xs font-small overflow-auto">
                     <div className="">{transcriptData.transcript}</div>
                   </CardContent>
                   <CardFooter>
