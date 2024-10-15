@@ -61,7 +61,7 @@ YouTube Transcript Fetcher is a React-based web application that allows users to
 
 The backend service is responsible for fetching the transcript from YouTube using `ytdl-core` and `youtube-captions-scraper`.
 
-![Backend Service](https://objects-us-east-1.dream.io/az-assets/youtube-transcript-generator.png "YouTube Transcript Generator")
+![Backend Service](https://objects-us-east-1.dream.io/az-assets/youtube-transcript-generator-2.png "YouTube Transcript Generator")
 
 To set up the backend:
 
