@@ -41,7 +41,7 @@ const App: React.FC = () => {
   const handleCopy = async () => {
     if (transcriptData) {
       try {
-        await navigator.clipboard.writeText(transcriptData.transcript);
+        await navigator.clipboard.writeText(`${transcriptData.title}\n\n${transcriptData.transcript}`);
         setIsCopied(true);
         setTimeout(() => setIsCopied(false), 2000);
       } catch (error) {
@@ -78,7 +78,7 @@ const App: React.FC = () => {
                   onClick={handleSubmit}
                   disabled={loading || !url.trim()}
                 >
-                  {loading ? "Fetching..." : "Fetch Transcript"}
+                  {loading ? "Fetching..." : "Get Transcript"}
                 </Button>
               </div>
             </div>
