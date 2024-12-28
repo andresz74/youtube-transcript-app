@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "./hooks";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { fetchTranscript, resetTranscript } from "./actions";
 
 const App: React.FC = () => {
@@ -26,8 +28,10 @@ const App: React.FC = () => {
   const error = useAppSelector((state) => state.transcript.error);
   const [isCopied, setIsCopied] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showDetailed, setShowDetailed] = useState(false);
 
   useEffect(() => {
+    setShowDetailed(false);
     if (transcriptData || error) {
       console.log("Transcript Data:", transcriptData); // Verify the response
       setLoading(false);
@@ -37,7 +41,7 @@ const App: React.FC = () => {
   const handleSubmit = () => {
     if (url === lastFetchedUrl) {
       console.log("Transcript already fetched for this URL. Skipping fetch.");
-      alert('Transcript is already fetched for this URL.');
+      alert("Transcript is already fetched for this URL.");
       return;
     }
 
@@ -101,14 +105,16 @@ const App: React.FC = () => {
                 {error}
               </div>
             )}
-            {/* <div className="flex items-center space-x-2">
-              <Checkbox
-                id="isDetailed"
-                checked={isDetailed}
-                onChange={() => setIsDetailed(!isDetailed)}
-              />
-              <Label htmlFor="isDetailed">Detailed Transcript</Label>
-            </div> */}
+            {showDetailed && (
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="isDetailed"
+                  checked={isDetailed}
+                  onChange={() => setIsDetailed(!isDetailed)}
+                />
+                <Label htmlFor="isDetailed">Detailed Transcript</Label>
+              </div>
+            )}
             <div className="flex flex-col space-y-1.5 items-center"></div>
             {error && <p style={{ color: "red" }}>{error}</p>}
 
