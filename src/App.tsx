@@ -9,11 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAppDispatch, useAppSelector } from "./hooks";
-import { fetchTranscript } from "./actions";
+import { fetchTranscript, resetTranscript } from "./actions";
 
 const App: React.FC = () => {
   const [url, setUrl] = useState("");
@@ -21,6 +19,9 @@ const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const transcriptData = useAppSelector(
     (state) => state.transcript.transcriptData
+  );
+  const lastFetchedUrl = useAppSelector(
+    (state) => state.transcript.lastFetchedUrl
   );
   const error = useAppSelector((state) => state.transcript.error);
   const [isCopied, setIsCopied] = useState(false);
@@ -34,6 +35,16 @@ const App: React.FC = () => {
   }, [transcriptData, error]);
 
   const handleSubmit = () => {
+    if (url === lastFetchedUrl) {
+      console.log("Transcript already fetched for this URL. Skipping fetch.");
+      alert('Transcript is already fetched for this URL.');
+      return;
+    }
+
+    if (transcriptData) {
+      dispatch(resetTranscript());
+    }
+
     setLoading(true);
     dispatch(fetchTranscript(url, isDetailed));
   };
@@ -41,7 +52,9 @@ const App: React.FC = () => {
   const handleCopy = async () => {
     if (transcriptData) {
       try {
-        await navigator.clipboard.writeText(`${transcriptData.title}\n\n${transcriptData.transcript}`);
+        await navigator.clipboard.writeText(
+          `${transcriptData.title}\n\n${transcriptData.transcript}`
+        );
         setIsCopied(true);
         setTimeout(() => setIsCopied(false), 2000);
       } catch (error) {
@@ -55,7 +68,8 @@ const App: React.FC = () => {
       <Card className="w-[480px]">
         <CardHeader>
           <CardTitle>YouTube Transcript Fetcher</CardTitle>
-          <CardDescription>Fetch and copy YouTube video transcripts. Choose between a simple or
+          <CardDescription>
+            Fetch and copy YouTube video transcripts. Choose between a simple or
             detailed transcript.
           </CardDescription>
         </CardHeader>
@@ -82,7 +96,11 @@ const App: React.FC = () => {
                 </Button>
               </div>
             </div>
-            {error && <div className="flex" style={{ color: "red" }}>{error}</div>}
+            {error && (
+              <div className="flex" style={{ color: "red" }}>
+                {error}
+              </div>
+            )}
             {/* <div className="flex items-center space-x-2">
               <Checkbox
                 id="isDetailed"
@@ -91,14 +109,15 @@ const App: React.FC = () => {
               />
               <Label htmlFor="isDetailed">Detailed Transcript</Label>
             </div> */}
-            <div className="flex flex-col space-y-1.5 items-center">
-            </div>
+            <div className="flex flex-col space-y-1.5 items-center"></div>
             {error && <p style={{ color: "red" }}>{error}</p>}
 
             {transcriptData && (
               <div className="mt-4">
                 <Card className="">
-                  <div className="p-2 text-sm font-bold">{transcriptData.title}</div>
+                  <div className="p-2 text-sm font-bold">
+                    {transcriptData.title}
+                  </div>
                   <CardContent className="max-h-[320px] text-xs font-small overflow-auto">
                     <div className="">{transcriptData.transcript}</div>
                   </CardContent>
