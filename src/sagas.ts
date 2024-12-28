@@ -13,7 +13,7 @@ function* fetchTranscriptSaga(action: any): Generator<any, void, AxiosResponse<T
   const endpoint = isDetailed ? '/transcript' : '/simple-transcript';
   try {
     const response: AxiosResponse<TranscriptResponse> = yield call(axios.post, `${config.apiBaseUrl}${endpoint}`, { url });
-    yield put(fetchTranscriptSuccess(response.data));
+    yield put(fetchTranscriptSuccess(response.data, url));
   } catch (error) {
     yield put(fetchTranscriptFailure('Error fetching transcript'));
   }
