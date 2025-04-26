@@ -10,7 +10,7 @@ interface TranscriptResponse {
 
 function* fetchTranscriptSaga(action: any): Generator<any, void, AxiosResponse<TranscriptResponse>> {
   const { url, isDetailed } = action.payload;
-  const endpoint = isDetailed ? '/transcript' : '/simple-transcript';
+  const endpoint = isDetailed ? '/transcript' : '/simple-transcript-v2';
   try {
     const response: AxiosResponse<TranscriptResponse> = yield call(axios.post, `${config.apiBaseUrl}${endpoint}`, { url });
     yield put(fetchTranscriptSuccess(response.data, url));
