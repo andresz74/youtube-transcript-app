@@ -2,6 +2,8 @@
 
 YouTube Transcript Fetcher is a React-based web application that allows users to fetch and copy YouTube video transcripts. It provides two modes: a simple transcript and a detailed transcript with more video metadata.
 
+Running app: https://apps.andreszenteno.com/youtube-transcript/
+
 ![YouTube Transcript Fetcher](https://objects-us-east-1.dream.io/az-assets/youtube-transcript.png "YouTube Transcript Fetcher")
 
 ## Features
