@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { fetchTranscript, resetTranscript } from "./actions";
+import { fetchTranscript, fetchingTranscript, resetTranscript } from "./actions";
 import {
   Accordion,
   AccordionContent,
@@ -35,6 +35,10 @@ const App: React.FC = () => {
   const [isCopied, setIsCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDetailed, setShowDetailed] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(""); // State to track selected language
+  const isFetching = useAppSelector(
+    (state: any) => state.transcript?.loading
+  );
 
   useEffect(() => {
     setShowDetailed(false);
@@ -75,7 +79,7 @@ const App: React.FC = () => {
 
   const getPublishDate = (date: string) => {
     const dateObj = new Date(date);
-    return dateObj.toLocaleString(  "en-US", {
+    return dateObj.toLocaleString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -83,6 +87,18 @@ const App: React.FC = () => {
       minute: "2-digit",
       hour12: true,
     });
+  };
+
+  // Handle language change
+  interface LanguageChangeEvent extends React.ChangeEvent<HTMLSelectElement> {}
+  interface Language {
+    code: string;
+    name: string;
+  }
+  const handleLanguageChange = (e: LanguageChangeEvent): void => {
+    setSelectedLanguage(e.target.value);
+    dispatch(fetchingTranscript());
+    dispatch(fetchTranscript(url, isDetailed, e.target.value));
   };
 
   return (
@@ -174,14 +190,24 @@ const App: React.FC = () => {
                             </div>
                             <div>
                               <strong>Publish date:</strong>{" "}
-                              {getPublishDate(transcriptData.videoInfoSummary.publishDate)}
+                              {getPublishDate(
+                                transcriptData.videoInfoSummary.publishDate
+                              )}
                             </div>
                             <div>
                               <strong>View Count:</strong>{" "}
                               {transcriptData.videoInfoSummary.viewCount}
                             </div>
                             <div>
-                              <iframe className="w-full aspect-video" src={transcriptData.videoInfoSummary.embed.iframeUrl} frameBorder="0" title="video-info-iframe"></iframe>
+                              <iframe
+                                className="w-full aspect-video"
+                                src={
+                                  transcriptData.videoInfoSummary.embed
+                                    .iframeUrl
+                                }
+                                frameBorder="0"
+                                title="video-info-iframe"
+                              ></iframe>
                             </div>
                             <div>
                               <strong>Description:</strong>{" "}
@@ -196,7 +222,33 @@ const App: React.FC = () => {
                       <AccordionHeader>Video Transcript</AccordionHeader>
                       <AccordionContent>
                         <CardContent className="max-h-[320px] text-xs overflow-auto">
-                          <div className="">{transcriptData.transcript}</div>
+                          <div className="flex flex-col mb-2">
+                            <select
+                              id="language-select"
+                              className="mt-2 block w-full p-2 border border-gray-300 rounded-md"
+                              value={
+                                transcriptData.transcriptLanguageCode ||
+                                selectedLanguage
+                              }
+                              onChange={handleLanguageChange}
+                            >
+                              {transcriptData.languages.map(
+                                (
+                                  lang: Language,
+                                  index: number
+                                ): JSX.Element => (
+                                  <option key={index} value={lang.code}>
+                                    {lang.name}
+                                  </option>
+                                )
+                              )}
+                            </select>
+                          </div>
+                          <div className="">
+                            {!isFetching
+                              ? transcriptData.transcript
+                              : "Loading"}
+                          </div>
                         </CardContent>
                       </AccordionContent>
                     </AccordionItem>
