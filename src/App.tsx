@@ -14,6 +14,12 @@ import { useAppDispatch, useAppSelector } from "./hooks";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { fetchTranscript, resetTranscript } from "./actions";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionHeader,
+  AccordionItem,
+} from "./components/ui/accordion";
 
 const App: React.FC = () => {
   const [url, setUrl] = useState("");
@@ -65,6 +71,18 @@ const App: React.FC = () => {
         console.error("Failed to copy:", error);
       }
     }
+  };
+
+  const getPublishDate = (date: string) => {
+    const dateObj = new Date(date);
+    return dateObj.toLocaleString(  "en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
   };
 
   return (
@@ -121,12 +139,68 @@ const App: React.FC = () => {
             {transcriptData && (
               <div className="mt-4">
                 <Card className="">
+                  <div className="p-2">
+                    <img
+                      className="rounded-sm"
+                      src={transcriptData.videoInfoSummary.thumbnails[4].url}
+                      alt=""
+                    />
+                  </div>
                   <div className="p-2 text-sm font-bold">
                     {transcriptData.title}
                   </div>
-                  <CardContent className="max-h-[320px] text-xs font-small overflow-auto">
-                    <div className="">{transcriptData.transcript}</div>
-                  </CardContent>
+                  <Accordion>
+                    <AccordionItem>
+                      <AccordionHeader>Video Info Summary</AccordionHeader>
+                      <AccordionContent>
+                        <CardContent className="max-h-[320px] text-xs overflow-auto">
+                          <div className="flex flex-col space-y-2">
+                            <div>
+                              <strong>Title:</strong> {transcriptData.title}
+                            </div>
+                            <div>
+                              <strong>Author:</strong>{" "}
+                              <a
+                                className="border-b-neutral-950 border-b-2 text-blue-950"
+                                href={
+                                  transcriptData.videoInfoSummary.author
+                                    .user_url
+                                }
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {transcriptData.videoInfoSummary.author.user}
+                              </a>
+                            </div>
+                            <div>
+                              <strong>Publish date:</strong>{" "}
+                              {getPublishDate(transcriptData.videoInfoSummary.publishDate)}
+                            </div>
+                            <div>
+                              <strong>View Count:</strong>{" "}
+                              {transcriptData.videoInfoSummary.viewCount}
+                            </div>
+                            <div>
+                              <iframe className="w-full aspect-video" src={transcriptData.videoInfoSummary.embed.iframeUrl} frameBorder="0" title="video-info-iframe"></iframe>
+                            </div>
+                            <div>
+                              <strong>Description:</strong>{" "}
+                              {transcriptData.videoInfoSummary.description}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem open>
+                      <AccordionHeader>Video Transcript</AccordionHeader>
+                      <AccordionContent>
+                        <CardContent className="max-h-[320px] text-xs overflow-auto">
+                          <div className="">{transcriptData.transcript}</div>
+                        </CardContent>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                   <CardFooter>
                     <Button
                       variant="outline"
