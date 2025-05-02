@@ -69,6 +69,7 @@ const App: React.FC = () => {
       category: "User",
       action: "Clicked Get Transcript",
       label: "Homepage Hero",
+      value: 45,
     });
     dispatch(fetchTranscript(url, isDetailed));
   };
@@ -89,6 +90,7 @@ const App: React.FC = () => {
       category: "User",
       action: "Clicked Copy Transcript",
       label: "Homepage Hero",
+      value: 44,
     });
   };
 

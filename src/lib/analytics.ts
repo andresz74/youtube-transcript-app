@@ -6,8 +6,10 @@ const MEASUREMENT_ID = "G-5VF5W3XLFG"; // Replace with your Measurement ID
 export const initGA = () => {
   if (!isProduction) {
     ReactGA.initialize(MEASUREMENT_ID, { 
-        testMode: true,
         gaOptions: {
+          debug_mode: true
+        },
+        gtagOptions: {
           debug_mode: true
         }
     });
