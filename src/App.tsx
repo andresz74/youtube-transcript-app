@@ -44,7 +44,6 @@ const App: React.FC = () => {
   useEffect(() => {
     setShowDetailed(false);
     if (transcriptData || error) {
-      console.log("Transcript Data:", transcriptData); // Verify the response
       setLoading(false);
     }
   }, [transcriptData, error]);
