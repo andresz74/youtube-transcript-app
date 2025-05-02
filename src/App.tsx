@@ -20,6 +20,7 @@ import {
   AccordionHeader,
   AccordionItem,
 } from "./components/ui/accordion";
+import { initGA, logEvent } from "./lib/analytics";
 
 const App: React.FC = () => {
   const [url, setUrl] = useState("");
@@ -48,6 +49,10 @@ const App: React.FC = () => {
     }
   }, [transcriptData, error]);
 
+  useEffect(() => {
+    initGA();
+  }, []);
+
   const handleSubmit = () => {
     if (url === lastFetchedUrl) {
       console.log("Transcript already fetched for this URL. Skipping fetch.");
@@ -60,6 +65,11 @@ const App: React.FC = () => {
     }
 
     setLoading(true);
+    logEvent({
+      category: "User",
+      action: "Clicked Get Transcript",
+      label: "Homepage Hero",
+    });
     dispatch(fetchTranscript(url, isDetailed));
   };
 
@@ -75,6 +85,11 @@ const App: React.FC = () => {
         console.error("Failed to copy:", error);
       }
     }
+    logEvent({
+      category: "User",
+      action: "Clicked Copy Transcript",
+      label: "Homepage Hero",
+    });
   };
 
   const getPublishDate = (date: string) => {
@@ -107,8 +122,7 @@ const App: React.FC = () => {
         <CardHeader>
           <CardTitle>YouTube Transcript Fetcher</CardTitle>
           <CardDescription>
-            Fetch and copy YouTube video transcripts. Choose between a simple or
-            detailed transcript.
+            Fetch and copy YouTube video transcripts. 
           </CardDescription>
         </CardHeader>
         <CardContent>
