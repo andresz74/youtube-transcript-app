@@ -23,11 +23,10 @@ type EventParams = {
 };
 
 export const logEvent = ({ category, action, label, value }: EventParams) => {
-//   if (!isProduction) {
-//     console.log("GA Event", { category, action, label, value });
-//     return;
-//   }
-  console.log("GA Event", { category, action, label, value });
+  if (!isProduction) {
+    console.log("GA Event", { category, action, label, value });
+    return;
+  }
   ReactGA.event({
     category,
     action,
