@@ -2,10 +2,11 @@ export const FETCH_TRANSCRIPT = 'FETCH_TRANSCRIPT';
 export const FETCH_TRANSCRIPT_SUCCESS = 'FETCH_TRANSCRIPT_SUCCESS';
 export const FETCH_TRANSCRIPT_FAILURE = 'FETCH_TRANSCRIPT_FAILURE';
 export const RESET_TRANSCRIPT = 'RESET_TRANSCRIPT';
+export const FETCHING_TRANSCRIPT = 'FETCHING_TRANSCRIPT';
 
-export const fetchTranscript = (url: string, isDetailed: boolean) => ({
+export const fetchTranscript = (url: string, isDetailed: boolean, lang?: string, ) => ({
   type: FETCH_TRANSCRIPT,
-  payload: { url, isDetailed }
+  payload: { url, isDetailed, lang }
 });
 
 export const fetchTranscriptSuccess = (data: any, url: any) => ({
@@ -21,4 +22,8 @@ export const fetchTranscriptFailure = (error: string) => ({
 
 export const resetTranscript = () => ({
   type: RESET_TRANSCRIPT,
+});
+
+export const fetchingTranscript = () => ({
+  type: FETCHING_TRANSCRIPT,
 });
