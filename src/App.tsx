@@ -222,7 +222,7 @@ const App: React.FC = () => {
                       <AccordionHeader>Video Transcript</AccordionHeader>
                       <AccordionContent>
                         <CardContent className="max-h-[320px] text-xs overflow-auto">
-                          <div className="flex flex-col mb-2">
+                         {transcriptData.languages ? ( <div className="flex flex-col mb-2">
                             <select
                               id="language-select"
                               className="mt-2 block w-full p-2 border border-gray-300 rounded-md"
@@ -243,7 +243,7 @@ const App: React.FC = () => {
                                 )
                               )}
                             </select>
-                          </div>
+                          </div>) : null}
                           <div className="">
                             {!isFetching
                               ? transcriptData.transcript
