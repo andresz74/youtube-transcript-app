@@ -5,6 +5,7 @@ const MEASUREMENT_ID = "G-5VF5W3XLFG";
 
 export const initGA = () => {
   if (!isProduction) {
+    console.log("GA initialized Development");
     ReactGA.initialize(MEASUREMENT_ID, { 
         gaOptions: {
           debug_mode: true
@@ -14,14 +15,8 @@ export const initGA = () => {
         }
     });
   } else {
-    ReactGA.initialize(MEASUREMENT_ID, { 
-        gaOptions: {
-          debug_mode: true
-        },
-        gtagOptions: {
-          debug_mode: true
-        }
-    });
+    console.log("GA initialized Production");
+    ReactGA.initialize(MEASUREMENT_ID);
   }
 };
 
